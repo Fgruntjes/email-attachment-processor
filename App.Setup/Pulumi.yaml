@@ -1,0 +1,4 @@
+name: App.Setup
+description: Setup required github secrets for CI/CD
+runtime:
+    name: dotnet
