@@ -9,16 +9,16 @@ jobs:
     test_quality_dotnet:
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v3
-        -   uses: actions/setup-dotnet@v3
-            with:
-                dotnet-version: 7.0
-        -   run: dotnet format --verify-no-changes
+            - uses: actions/checkout@v3
+            - uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 7.0
+            - run: dotnet format --verify-no-changes
 
     test_quality_success:
         runs-on: ubuntu-latest
         needs:
-        - test_quality_dotnet
+            - test_quality_dotnet
         if: ${{ always() }}
         steps:
-        -   run: "[[ '${{ needs.test_quality_dotnet.result }}' == 'success' ]]"
+            - run: "[[ '${{ needs.test_quality_dotnet.result }}' == 'success' ]]"

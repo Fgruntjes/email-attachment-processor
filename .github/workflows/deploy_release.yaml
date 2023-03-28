@@ -3,25 +3,25 @@ name: Deploy environment
 on:
     push:
         branches:
-        - main
-        - beta
-        - alpha
+            - main
+            - beta
+            - alpha
 
 jobs:
     deploy_slug:
         runs-on: ubuntu-latest
         steps:
-        -   uses: rlespinasse/github-slug-action@v4
-        -   id: environment
-            run: echo "var=${{ env.GITHUB_REF_SLUG_URL }}" >> $GITHUB_OUTPUT
-        -   id: tag
-            run: echo "var=${{ env.GITHUB_SHA_SHORT }}" >> $GITHUB_OUTPUT
+            - uses: rlespinasse/github-slug-action@v4
+            - id: environment
+              run: echo "var=${{ env.GITHUB_REF_SLUG_URL }}" >> $GITHUB_OUTPUT
+            - id: tag
+              run: echo "var=${{ env.GITHUB_SHA_SHORT }}" >> $GITHUB_OUTPUT
         outputs:
             environment: ${{ steps.environment.outputs.var }}
             tag: ${{ steps.tag.outputs.var }}
 
     build:
-        needs: [ deploy_slug ]
+        needs: [deploy_slug]
         uses: ./.github/workflows/build.yaml
         secrets: inherit
         with:
@@ -29,7 +29,7 @@ jobs:
             tag: ${{ needs.deploy_slug.outputs.tag }}
 
     deploy:
-        needs: [ deploy_slug, build ]
+        needs: [deploy_slug, build]
         uses: ./.github/workflows/deploy.yaml
         secrets: inherit
         concurrency: ${{ needs.deploy_slug.outputs.environment }}
@@ -39,7 +39,7 @@ jobs:
             register_deployment: true
 
     delete_containers:
-        needs: [ deploy_slug, deploy ]
+        needs: [deploy_slug, deploy]
         uses: ./.github/workflows/delete_containers.yaml
         secrets: inherit
         if: ${{ always() }}
