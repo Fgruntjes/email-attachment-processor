@@ -103,35 +103,50 @@ public class SetupStack : Stack
             }
         });
 
-        SetVariable("GOOGLE_WORKLOAD_IDENTITY_PROVIDER", identityPoolProvider.Name);
-        SetVariable("GOOGLE_SERVICE_ACCOUNT_EMAIL", serviceAccount.Email);
-        SetVariable("GOOGLE_PROJECT_ID", _appConfig.Slug);
+        SetVariable("GOOGLE_WORKLOAD_IDENTITY_PROVIDER", identityPoolProvider.Name, false);
+        SetVariable("GOOGLE_SERVICE_ACCOUNT", serviceAccount.Email, false);
+        SetVariable("GOOGLE_PROJECT_ID", _appConfig.Slug, false);
+        SetVariable("GOOGLE_REGION", _appConfig.Region, false);
     }
 
-    private void SetVariable(string key, Output<string> valueOutput)
+    private void SetVariable(string key, Output<string> valueOutput, bool secret)
     {
-        valueOutput.Apply(value => SetVariable(key, value));
+        valueOutput.Apply(value => SetVariable(key, value, secret));
     }
 
-    private string SetVariable(string key, string value)
+    private string SetVariable(string key, string value, bool secret)
     {
-        new ActionsSecret(key, new()
+        if (secret)
         {
-            Repository = _appConfig.Repository
+            new ActionsSecret(key, new()
+            {
+                Repository = _appConfig.Repository
+                    .Split('/', 2)
+                    .Last(),
+                SecretName = key,
+                PlaintextValue = value
+            });
+            new DependabotSecret(key, new()
+            {
+                Repository = _appConfig.Repository
+                    .Split('/', 2)
+                    .Last(),
+                SecretName = key,
+                PlaintextValue = value
+            });
+        }
+        else
+        {
+            new ActionsVariable(key, new()
+            {
+                Repository = _appConfig.Repository
                 .Split('/', 2)
                 .Last(),
-            SecretName = key,
-            PlaintextValue = value
-        });
+                VariableName = key,
+                Value = value
+            });
+        }
 
-        new DependabotSecret(key, new()
-        {
-            Repository = _appConfig.Repository
-                .Split('/', 2)
-                .Last(),
-            SecretName = key,
-            PlaintextValue = value
-        });
         new DevEnvVariable(key, new()
         {
             Name = key,

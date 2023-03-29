@@ -56,6 +56,7 @@ then
     pulumi_config_set app:slug "${APP_SLUG}"
     pulumi_config_set app:repository "${APP_REPOSITORY}"
     pulumi_config_set app:repositoryIsOrganization "${APP_REPOSITORY_IS_ORGANISATION}"
+    pulumi_config_set app:region "${GCP_REGION}"
     
     pulumi_config_set gcp:project "${APP_SLUG}"
     pulumi_config_set gcp:region "${GCP_REGION}"

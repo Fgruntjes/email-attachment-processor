@@ -9,6 +9,7 @@ public class AppConfig
 
     public string Slug => _config.Require("slug");
     public string Repository => _config.Require("repository");
+    public string Region => _config.Require("region");
 
     public AppConfig()
     {

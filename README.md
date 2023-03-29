@@ -6,9 +6,11 @@ This project is an opinionated CI/CD framework that utilizes Pulumi, Github Acti
 
 ## Features
 - Provides an easy-to-use solution for building and deploying applications using modern CI/CD practices.
-    - Static code tests, style and quality tests
-    - Unit tests [Unit Test assumtions](#unit-test-assumtions))
-- Deployment are executed using Pulumi.
+    - Static tests, style and quality tests
+    - Unit tests [Unit Test assumtions](#unit-test-assumtions)
+    - Integration tests
+    - Always clean up environments
+- Deployment are executed using [Pulumi](https://github.com/pulumi/pulumi).
 - Default settings are used unless otherwise specified.
 
 ## Unit Test assumtions

@@ -25,6 +25,10 @@ jobs:
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
             tag: ${{ needs.deploy_slug.outputs.tag }}
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     deploy:
         needs: [deploy_slug, build]
@@ -39,6 +43,10 @@ jobs:
             environment: ${{ needs.deploy_slug.outputs.environment }}
             tag: ${{ needs.deploy_slug.outputs.tag }}
             register_deployment: true
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     delete_containers:
         needs: [deploy_slug, deploy]
@@ -49,3 +57,7 @@ jobs:
             environment: ${{ needs.deploy_slug.outputs.environment }}
             keep: 2
             grace: "168h"
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
