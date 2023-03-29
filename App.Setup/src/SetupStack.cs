@@ -4,6 +4,7 @@ using Pulumi.Gcp.Iam.Inputs;
 using Pulumi.Gcp.Projects;
 using Pulumi.Gcp.ServiceAccount;
 using Pulumi.Github;
+using Pulumi.Github.Inputs;
 using IAMBinding = Pulumi.Gcp.ServiceAccount.IAMBinding;
 
 namespace App.Setup;
@@ -27,8 +28,29 @@ public class SetupStack : Stack
 
     private void GithubBranchProtection()
     {
-        // 
-        throw new NotImplementedException();
+        // TODO: Auto detect if branch is owned by organisation.
+        if (!_appConfig.RepositoryIsOrganization)
+            return;
+
+        new BranchProtectionV3("branch-protection", new()
+        {
+            Repository = _appConfig.Repository,
+            Branch = "[bm][ea][ti][an]",
+            EnforceAdmins = true,
+            RequireConversationResolution = true,
+            RequiredStatusChecks = new BranchProtectionV3RequiredStatusChecksArgs()
+            {
+
+                Strict = true,
+                IncludeAdmins = true,
+                Checks = new[]
+                {
+                    "test_quality_success",
+                    "test_unit_success",
+                    "test_integration_success",
+                }
+            }
+        });
     }
 
     private void GcpServices()
