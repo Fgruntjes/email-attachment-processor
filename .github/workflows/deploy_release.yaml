@@ -1,5 +1,3 @@
-name: Deploy environment
-
 on:
     push:
         branches:
@@ -32,6 +30,10 @@ jobs:
         needs: [deploy_slug, build]
         uses: ./.github/workflows/deploy.yaml
         secrets: inherit
+        permissions:
+            contents: read
+            id-token: write
+            deployments: write
         concurrency: ${{ needs.deploy_slug.outputs.environment }}
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
