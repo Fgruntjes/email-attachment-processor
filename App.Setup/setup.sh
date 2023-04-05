@@ -6,8 +6,9 @@ cd "$(dirname "$(realpath "$0")")";
 
 # Load env variables
 set -a
-source .env
-test -f .env.local && source .env.local
+source ../.env
+test -f ../.local.env && source ../.local.env
+test -f ../.setup.env && source ../.setup.env
 set +a
 
 # Create google project if not exists
@@ -68,11 +69,9 @@ else
         --create "setup"
 fi
 
-pulumi refresh \
-    --non-interactive \
-    --yes \
-    --clear-pending-creates \
-    --diff
+test -f ../.deploy.env && source ../.deploy.env
+
+pulumi refresh --non-interactive --yes
 
 pulumi up \
     --non-interactive \

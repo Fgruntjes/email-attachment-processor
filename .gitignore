@@ -526,3 +526,7 @@ fabric.properties
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,intellij,visualstudiocode
+
+
+# Env files
+/.*.env
