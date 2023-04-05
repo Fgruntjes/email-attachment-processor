@@ -1,6 +1,10 @@
-name: Integration tests
 on:
     pull_request:
+
+permissions:
+    contents: read
+    id-token: write
+    deployments: write
 
 jobs:
     deploy_slug:
@@ -25,6 +29,10 @@ jobs:
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
             tag: ${{ needs.deploy_slug.outputs.tag }}
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     deploy:
         needs: [deploy_slug, build]
@@ -36,6 +44,10 @@ jobs:
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
             tag: ${{ needs.deploy_slug.outputs.tag }}
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     test:
         runs-on: ubuntu-latest
@@ -53,6 +65,10 @@ jobs:
         if: ${{ needs.build.result != 'skipped' && needs.deploy.result != 'skipped' && needs.test.result != 'skipped' }}
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     delete_resources:
         needs: [build, deploy_slug, deploy, test]
@@ -61,6 +77,10 @@ jobs:
         if: ${{ needs.build.result != 'skipped' && needs.deploy.result != 'skipped' && needs.test.result != 'skipped' }}
         with:
             environment: ${{ needs.deploy_slug.outputs.environment }}
+            google_workload_identity_provider: "${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}"
+            google_service_account: "${{ vars.GOOGLE_SERVICE_ACCOUNT }}"
+            google_project_id: "${{ vars.GOOGLE_PROJECT_ID }}"
+            google_region: "${{ vars.GOOGLE_REGION }}"
 
     test_integration_success:
         runs-on: ubuntu-latest
@@ -71,4 +91,5 @@ jobs:
             - delete_resources
         if: ${{ always() }}
         steps:
-            - run: "[[ '${{ needs.deploy.result }}' == 'success' && '${{ needs.test.result }}' == 'success' ]]"
+            - run: "[[ '${{ needs.deploy.result }}' == 'success' ]]"
+            - run: "[[ '${{ needs.test.result }}' == 'success' ]]"

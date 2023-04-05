@@ -6,8 +6,9 @@ cd "$(dirname "$(realpath "$0")")";
 
 # Load env variables
 set -a
-source .env
-test -f .env.local && source .env.local
+source ../.env
+test -f ../.local.env && source ../.local.env
+test -f ../.setup.env && source ../.setup.env
 set +a
 
 # Create google project if not exists
@@ -55,6 +56,8 @@ then
     
     pulumi_config_set app:slug "${APP_SLUG}"
     pulumi_config_set app:repository "${APP_REPOSITORY}"
+    pulumi_config_set app:repositoryIsOrganization "${APP_REPOSITORY_IS_ORGANISATION}"
+    pulumi_config_set app:region "${GCP_REGION}"
     
     pulumi_config_set gcp:project "${APP_SLUG}"
     pulumi_config_set gcp:region "${GCP_REGION}"
@@ -66,11 +69,9 @@ else
         --create "setup"
 fi
 
-pulumi refresh \
-    --non-interactive \
-    --yes \
-    --clear-pending-creates \
-    --diff
+test -f ../.deploy.env && source ../.deploy.env
+
+pulumi refresh --non-interactive --yes
 
 pulumi up \
     --non-interactive \

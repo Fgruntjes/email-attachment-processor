@@ -11,9 +11,11 @@ class Program
 
         if (debug)
         {
+            Console.WriteLine($"Waiting for debugger (pid: {Environment.ProcessId})");
             while (!Debugger.IsAttached)
             {
-                Thread.Sleep(100);
+                Console.WriteLine($"Waiting for debugger (pid: {Environment.ProcessId})");
+                Thread.Sleep(500);
             }
         }
 

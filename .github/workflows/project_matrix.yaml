@@ -1,4 +1,3 @@
-name: ProjectMatrix
 on:
     workflow_call:
         outputs:
@@ -17,6 +16,8 @@ jobs:
               id: tests
             - run: echo "matrix=$(.github/project_matrix.sh docker --json)" >> $GITHUB_OUTPUT
               id: docker
+            - run: echo "matrix=$(.github/project_matrix.sh typescript --json)" >> $GITHUB_OUTPUT
+              id: typescript
         outputs:
             tests: ${{ steps.tests.outputs.matrix }}
             typescript: ${{ steps.typescript.outputs.matrix }}

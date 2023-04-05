@@ -33,23 +33,8 @@ if { [ ".env.deploy.local" -nt "Pulumi.${APP_ENVIRONMENT}.yaml" ] || [ ".env.loc
     pulumi_config_set app:tag "${APP_TAG}"
     pulumi_config_set app:environment "${APP_ENVIRONMENT}"
     pulumi_config_set app:projectDir "$(dirname $(pwd))"
-    pulumi_config_set app:dataProtectionCert "${DATA_PROTECTION_CERTIFICATE}"
 
     pulumi_config_set sentry:dsn "${SENTRY_DSN}" --secret
-    
-    pulumi_config_set mongodbatlas:publicKey "${MONGODB_ATLAS_PUBLIC_KEY}" --secret
-    pulumi_config_set mongodbatlas:privateKey "${MONGODB_ATLAS_PRIVATE_KEY}" --secret
-    pulumi_config_set mongodbatlasCustom:projectId "${MONGODB_ATLAS_PROJECT_ID}"
-    
-    pulumi_config_set cloudflare:apiToken "${CLOUDFLARE_API_TOKEN}" --secret
-    pulumi_config_set cloudflareCustom:accountId "${CLOUDFLARE_ACCOUNT_ID}"
-    
-    pulumi_config_set auth0:domain "${AUTH0_DOMAIN}"
-    pulumi_config_set auth0:client_id "${AUTH0_CLIENT_ID}" --secret
-    pulumi_config_set auth0:client_secret "${AUTH0_CLIENT_SECRET}" --secret
-    
-    pulumi_config_set ynab:clientId "${YNAB_CLIENT_ID}"
-    pulumi_config_set ynab:clientSecret "${YNAB_CLIENT_SECRET}" --secret
 else
     pulumi stack select \
         --non-interactive \
@@ -58,12 +43,7 @@ fi
 
 # Concurrency is handled by github actions
 pulumi cancel --yes
-# In case there is something existing 
-pulumi refresh \
-    --non-interactive \
-    --yes \
-    --clear-pending-creates \
-    --diff
+
 
 if [ "$1" == "up" ]; then
     pulumi up \

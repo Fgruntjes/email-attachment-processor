@@ -14,6 +14,11 @@ function isTest() {
     [[ "${PROJECT_NAME}" =~ \.Tests$ && "${PROJECT_NAME}" != "App.Lib.Tests" ]]
 }
 
+function isTypescript() {
+    PROJECT_NAME=$1
+    [[ -f "${PROJECT_DIRECTORY}/tsconfig.json" ]]
+}
+
 RESULT_PROJECTS=()
 PROJECT_DIRECTORIES=( $(find . -maxdepth 1 -type d) )
 for PROJECT_DIRECTORY in "${PROJECT_DIRECTORIES[@]}"
@@ -31,9 +36,14 @@ do
                 RESULT_PROJECTS+=($PROJECT_NAME)
             fi
             ;;
+        typescript)
+            if isTypescript "${PROJECT_NAME}"; then
+                RESULT_PROJECTS+=($PROJECT_NAME)
+            fi
+            ;;
         *)
             echo "Unknown project type ${1}"
-            echo "Usage: project_matrix.sh {tests|docker} [--json]"
+            echo "Usage: project_matrix.sh {tests|docker|typescript} [--json]"
             exit 1
             ;;
     esac
